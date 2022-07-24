@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+
 @Controller
 @RequestMapping("/board")
 public class BoardController {
@@ -45,8 +46,12 @@ public class BoardController {
         // @RequestParam을 사용하면 해당 파라미터가 반드시 있어야 하지만, 선택적으로 사용하려 하면 required = false를 하면 되고,
         // defalutValue로 default 값 설정도 가능함.
         if (id == null){
+            // id가 null이면 쓰기 버튼과 같아짐
+            // 동시에 새로운 Board VO(새로운 그릇)를 부여함
             model.addAttribute("board", new Board());
         } else {
+            // findById > id로 찾았는데 없으면 null 리턴
+            // 원래 findById 메서드를 통해 id로 원래 쓰던 Vo(그릇)을 찾음
             Board board = boardRepository.findById(id).orElse(null);
             model.addAttribute("board", board);
         }

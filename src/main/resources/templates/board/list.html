@@ -62,6 +62,7 @@
     </table>
     <nav aria-label="Page navigation example">
       <ul class="pagination justify-content-center">
+        <!-- board.pageable.pageNumber+1이 1이면 비활성화-->
         <li class="page-item" th:classappend="${1 == boards.pageable.pageNumber + 1} ? 'disabled'">
           <a class="page-link" href="#" th:href="@{/board/list(page=${boards.pageable.pageNumber -1},searchText=${param.searchText})}" tabindex="-1"
             aria-disabled="true">Previous</a>

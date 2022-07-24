@@ -13,6 +13,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     List<Board> findByTitleOrContent(String title, String content);
 
+    // 검색
     Page<Board> findByTitleContainingOrContentContaining(String title, String content, Pageable pageable);
 
 }
