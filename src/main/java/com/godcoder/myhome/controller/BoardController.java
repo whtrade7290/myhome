@@ -1,22 +1,25 @@
 package com.godcoder.myhome.controller;
 
+
+import com.godcoder.myhome.Service.BoardService;
 import com.godcoder.myhome.model.Board;
 import com.godcoder.myhome.repository.BoardRepository;
 import com.godcoder.myhome.validator.BoardValidator;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
-
+@Log
 @Controller
 @RequestMapping("/board")
 public class BoardController {
@@ -27,6 +30,8 @@ public class BoardController {
     @Autowired
     private BoardValidator boardValidator;
 
+    @Autowired
+    private BoardService boardService;
 
     @GetMapping("/list")
     public String list(Model model, @PageableDefault(size = 2) Pageable pageable,
@@ -40,6 +45,7 @@ public class BoardController {
         model.addAttribute("boards", boards);
         return "board/list";
     }
+
 
     @GetMapping("/form")
     public String form(Model model, @RequestParam(required = false) Long id){
@@ -60,14 +66,16 @@ public class BoardController {
     }
 
     @PostMapping("/form")
-    public String form(@Valid Board board, BindingResult bindingResult) {
+    public String form(@Valid Board board, BindingResult bindingResult, Authentication authentication) {
         // bindingResult Board Class에서 지정한 size 값 검사
         boardValidator.validate(board, bindingResult);
         if (bindingResult.hasErrors()) {
             return "board/form";
         }
-
-        boardRepository.save(board);
+//        Authentication username = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+//        boardRepository.save(board);
+        boardService.save(username, board);
         // redirect: /board/list 페이지 재조회
         return "redirect:/board/list";
     }
