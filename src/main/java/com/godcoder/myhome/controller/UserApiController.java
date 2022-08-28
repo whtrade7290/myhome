@@ -3,12 +3,14 @@ package com.godcoder.myhome.controller;
 import com.godcoder.myhome.model.Board;
 import com.godcoder.myhome.model.User;
 import com.godcoder.myhome.repository.UserRepository;
+import com.querydsl.core.types.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
-
+@Slf4j
 @RestController
 @RequestMapping("api")
 class UserApiController {
@@ -16,8 +18,18 @@ class UserApiController {
     private UserRepository repository;
 
     @GetMapping("/users")
-    List<User> all() {
-        return repository.findAll();
+    List<User> all(@RequestParam(required = false)String method, @RequestParam(required = false)String text) {
+        List<User> users = null;
+        if ("query".equals(method)){
+            users = repository.findByUsernameQuery(text);
+        } else if ("nativeQuery".equals(method)) {
+            users = repository.findByUsernameNativeQuery(text);
+        } else if ("querydsl".equals(method)) {
+
+        } else {
+            users = repository.findAll();
+        }
+        return users;
     }
     // end::get-aggregate-root[]
 
@@ -30,7 +42,6 @@ class UserApiController {
 
     @GetMapping("/users/{id}")
     User one(@PathVariable Long id) {
-
         return repository.findById(id).orElse(null);
     }
 
@@ -41,10 +52,8 @@ class UserApiController {
                 .map(user -> {
 //                    user.setTitle(newUser.getTitle());
 //                    user.setContent(newUser.getContent());
-//                    user.setBoards(newUser.getBoards());
-                    user.getBoards().clear();
-                    user.getBoards().addAll(newUser.getBoards());
-                    for(Board board : user.getBoards()) {
+                    user.setBoards(newUser.getBoards());
+                    for(Board board : user.getBoards()){
                         board.setUser(user);
                     }
                     return repository.save(user);

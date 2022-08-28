@@ -1,6 +1,7 @@
 package com.godcoder.myhome.model;
 
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
@@ -22,9 +23,9 @@ public class Board {
     private String title;
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    @JsonIgnore
+   @ManyToOne
+   @JoinColumn(name = "user_id")
+   @JsonIgnore
     private User user;
 
 }

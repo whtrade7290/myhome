@@ -16,8 +16,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User save(User user){
-        // 사용자가 입력한 비밀번호를 암호화 시킴
+    public User save(User user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         user.setEnabled(true);
@@ -26,4 +25,5 @@ public class UserService {
         user.getRoles().add(role);
         return userRepository.save(user);
     }
+
 }

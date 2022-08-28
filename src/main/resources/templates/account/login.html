@@ -15,6 +15,7 @@
 </head>
 
 <body class="text-center">
+  <!-- from의 그냥 action을 하면 csrf 토큰이 전송되지 않음 -->
   <form class="form-signin" th:action="@{/account/login}" method="post">
     <a th:href="@{/}"><img class="mb-4" src="https://getbootstrap.com/docs/4.5/assets/brand/bootstrap-solid.svg" alt=""
         width="72" height="72"></a>

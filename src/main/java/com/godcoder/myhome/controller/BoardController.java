@@ -66,13 +66,14 @@ public class BoardController {
     }
 
     @PostMapping("/form")
-    public String form(@Valid Board board, BindingResult bindingResult, Authentication authentication) {
+    public String postForm(@Valid Board board, BindingResult bindingResult, Authentication authentication) {
         // bindingResult Board Class에서 지정한 size 값 검사
         boardValidator.validate(board, bindingResult);
         if (bindingResult.hasErrors()) {
             return "board/form";
         }
-//        Authentication username = SecurityContextHolder.getContext().getAuthentication();
+        Authentication a = SecurityContextHolder.getContext().getAuthentication();
+        log.info("id = " + a);
         String username = authentication.getName();
 //        boardRepository.save(board);
         boardService.save(username, board);

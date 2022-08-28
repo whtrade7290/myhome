@@ -20,7 +20,6 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    // properties 의 datasource를 쓸 수 있도록 Autowired
     @Autowired
     private DataSource dataSource;
 
@@ -29,16 +28,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                        .antMatchers("/","/account/register", "/css/**", "/api/**").permitAll()
-                // /css/** < css 안의 모든파일 접근 허용
-                        .anyRequest().authenticated()
-                        .and()
+                // /css/** 하위 폴더 모두 permitAll 처리
+                .antMatchers("/", "/account/register", "/css/**", "/api/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
                 .formLogin()
-                        .loginPage("/account/login")
-                        .permitAll()
-                        .and()
+                .loginPage("/account/login")
+                .permitAll()
+                .and()
                 .logout()
-                        .permitAll();
+                .permitAll();
     }
 
     @Autowired
@@ -47,25 +46,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .passwordEncoder(passwordEncoder())
-                // 로그인 Authentication
-                // 반드시 아래 쿼리문 순서로 select 해야함
                 .usersByUsernameQuery("select username, password, enabled "
                         + "from user "
                         + "where username = ?")
-                // 권한 Authroization
                 .authoritiesByUsernameQuery("select u.username, r.name "
                         + "from user_role ur inner join user u on ur.user_id = u.id "
                         + "inner join role r on ur.role_id = r.id "
                         + "where u.username = ?");
     }
 
-
-
-
     @Bean
-    public PasswordEncoder passwordEncoder() {
+     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
 }
